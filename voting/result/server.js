@@ -13,10 +13,12 @@ var express = require('express'),
 var port = process.env.PORT || 8080;
 
 var db = process.env.POSTGRES_DB || "postgres";
-var hostname = process.env.POSTGRES_HOST || "postgres";
+var hostname = process.env.POSTGRES_HOST || "localhost";
 var username = process.env.POSTGRES_USER || "postgres";
 var password = process.env.POSTGRES_PASSWORD || "postgres";
-var optionsFile = process.env.OPTIONS_FILE || "./options";
+
+var optionA = process.env.OPTIONS_A || "Imperative";
+var optionB = process.env.OPTIONS_B || "Declarative";
 
 io.sockets.on('connection', function (socket) {
 
@@ -30,22 +32,9 @@ io.sockets.on('connection', function (socket) {
 });
 
 const data = {
-  options: {a:'Imperative',b:'Declarative'},
-  votes: {a:50,b:50},
+  options: {a: optionA, b: optionB},
+  votes: {a: 50, b: 50},
 }
-
-const readFile = () => {
-  fs.readFile(optionsFile, 'utf8', function(err, content) {
-    if(err) {
-      return console.log(err);
-    }
-    data.options = JSON.parse(content);
-    io.sockets.emit("options", data.options);
-  })
-};
-
-fs.watchFile(optionsFile, readFile);
-readFile();
 
 var pool = new pg.Pool({
   connectionString: 'postgres://' + username + ':' + password + '@' + hostname + '/' + db,
@@ -76,7 +65,7 @@ function getVotes(client) {
       console.error("Error performing query: " + err);
     } else {
       data.votes = collectVotesFromResult(result);
-      io.sockets.emit("scores", votes);
+      io.sockets.emit("scores", data.votes);
     }
     setTimeout(function() { getVotes(client) }, 1000);
   });
