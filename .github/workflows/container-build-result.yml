@@ -1,0 +1,64 @@
+name: build-container
+
+on:
+  push:
+    branches-ignore:
+    - $default-branch
+  pull_request:
+    branches:
+    - $default-branch
+
+jobs:
+  build-result:
+    runs-on: ubuntu-latest
+    env:
+      working-directory: ./voting/result
+    steps:
+    - uses: actions/checkout@v2
+    - name: Set up QEMU
+      uses: docker/setup-qemu-action@v1
+    - name: Set up Docker Buildx
+      uses: docker/setup-buildx-action@v1
+    - name: Build Container
+      id: docker_build_hub
+      uses: docker/build-push-action@v2
+      with:
+        context: ${{ env.working-directory }}
+        tags: |
+          atixag/voting/result
+
+  build-vote:
+    runs-on: ubuntu-latest
+    env:
+      working-directory: ./voting/vote
+    steps:
+    - uses: actions/checkout@v2
+    - name: Set up QEMU
+      uses: docker/setup-qemu-action@v1
+    - name: Set up Docker Buildx
+      uses: docker/setup-buildx-action@v1
+    - name: Build Container
+      id: docker_build_hub
+      uses: docker/build-push-action@v2
+      with:
+        context: ${{ env.working-directory }}
+        tags: |
+          atixag/voting/result
+
+  build-worker:
+    runs-on: ubuntu-latest
+    env:
+      working-directory: ./voting/worker
+    steps:
+    - uses: actions/checkout@v2
+    - name: Set up QEMU
+      uses: docker/setup-qemu-action@v1
+    - name: Set up Docker Buildx
+      uses: docker/setup-buildx-action@v1
+    - name: Build Container
+      id: docker_build_hub
+      uses: docker/build-push-action@v2
+      with:
+        context: ${{ env.working-directory }}
+        tags: |
+          atixag/voting/result
