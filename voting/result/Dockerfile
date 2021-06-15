@@ -1,4 +1,4 @@
-FROM node:10-slim
+FROM node:14-slim
 
 WORKDIR /app
 
@@ -15,5 +15,7 @@ COPY . .
 ENV PORT 8080
 
 EXPOSE 8080
+
+COPY ./options ./options
 
 CMD ["node", "server.js"]
