@@ -7,12 +7,13 @@ var bg2 = document.getElementById('background-stats-2');
 app.controller('statsCtrl', function($scope){
   $scope.aPercent = 50;
   $scope.bPercent = 50;
+  $scope.aOption = 'Imperative';
+  $scope.bOption = 'Declarative';
 
-  var updateScores = function(){
+  const updateScores = function(){
     socket.on('scores', function (json) {
-       data = JSON.parse(json);
-       var a = parseInt(data.a || 0);
-       var b = parseInt(data.b || 0);
+       var a = parseInt(json.a || 0);
+       var b = parseInt(json.b || 0);
 
        var percentages = getPercentages(a, b);
 
@@ -27,11 +28,21 @@ app.controller('statsCtrl', function($scope){
     });
   };
 
-  var init = function(){
+  const updateOptions = function(){
+    socket.on('options', function (json) {
+       $scope.$apply(function () {
+         $scope.aOption = json.a;
+         $scope.bOption = json.b;
+       });
+    });
+  };
+
+  var init = function() {
     document.body.style.opacity=1;
+    updateOptions();
     updateScores();
   };
-  socket.on('message',function(data){
+  socket.on('message',function(data) {
     init();
   });
 });
