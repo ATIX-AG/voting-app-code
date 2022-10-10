@@ -2,7 +2,7 @@
 ############################
 # STEP 1 build executable binary
 ############################
-FROM golang:1.16-alpine AS builder
+FROM golang:1.19-alpine AS builder
 ARG GO_FILES=.
 ARG GO_MAIN=main.go
 LABEL maintainer="Lukas Paluch <paluch@atix.de>"
@@ -28,12 +28,15 @@ RUN adduser \
     --uid "${UID}" \
     "${USER}"
 
-COPY ${GO_FILES} .
-RUN echo ${GO_FILES}
 # Fetch dependencies.
+COPY ${GO_FILES}/go.mod .
+COPY ${GO_FILES}/go.sum .
 RUN go mod download
 # Using go get.
-#RUN go get -v all
+RUN go get -v all
+
+# get go files
+COPY ${GO_FILES} .
 # Build the binary.
 ARG GOOS=linux
 ARG GOARCH=amd64
@@ -70,5 +73,5 @@ COPY --from=builder /my_tmp /tmp
 USER ${USER}:${USER}
 
 
-# Run the binary.
+USER ${UID}:${UID}
 ENTRYPOINT ["/main"]
