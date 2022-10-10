@@ -40,6 +40,7 @@ jobs:
         id: docker_build_ghcr_load
         uses: docker/build-push-action@v3
         with:
+          context: "./voting/${{ matrix.img }}"
           file: "./voting/${{ matrix.img }}/Dockerfile"
           push: true
           platforms: linux/amd64,linux/arm/v7,linux/arm64
