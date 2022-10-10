@@ -31,9 +31,10 @@ jobs:
         uses: docker/metadata-action@v4
         with:
           images: ghcr.io/${{ github.repository }}
+          flavor: |
+            latest=true
           tags: |
             type=semver,pattern={{version}}
-            latest=true
       -
         name: Build and push GHCR load
         id: docker_build_ghcr_load
