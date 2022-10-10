@@ -13,6 +13,8 @@ jobs:
         os: [linux]
     runs-on: ubuntu-latest
     steps:
+      - name: lowercase repository env
+        run: echo ::set-env name=IMAGE_REPOSITORY::$(echo ${{ github.repository }} | tr '[:upper:]' '[:lower:]')
       -
         name: Set up QEMU
         uses: docker/setup-qemu-action@v1
@@ -37,4 +39,4 @@ jobs:
           build-args:
             BUILDPLATFORM=${{ matrix.os }}/amd64
           tags: |
-            ghcr.io/${{ github.repository }}/${{ matrix.img }}:latest
+            ghcr.io/${{ env.IMAGE_REPOSITORY }}/${{ matrix.img }}:latest
