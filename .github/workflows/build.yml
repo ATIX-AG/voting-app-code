@@ -34,7 +34,7 @@ jobs:
           flavor: |
             latest=true
           tags: |
-            type=semver,pattern={{version}}
+            type=raw,value=latest
       -
         name: Build and push GHCR load
         id: docker_build_ghcr_load
